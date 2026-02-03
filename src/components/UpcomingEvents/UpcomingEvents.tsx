@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 interface EventItem {
   id: string;
   title: string;
@@ -7,6 +10,16 @@ interface EventItem {
   location: string;
   category: "Seminar" | "Workshop" | "Meetup" | "Cultural" | "Sports";
   description: string;
+  registration: {
+    last_date: string;
+    link: string;
+    registration_over: boolean;
+  };
+  contact: {
+    phone: string;
+    email: string;
+  };
+  tags: string[];
 }
 
 const events: EventItem[] = [
@@ -21,6 +34,16 @@ const events: EventItem[] = [
     category: "Meetup",
     description:
       "Gathering of members to review milestones and set goals for the year.",
+    registration: {
+      registration_over: false,
+      last_date: "Mar 15, 2026",
+      link: "https://example.com/register",
+    },
+    contact: {
+      phone: "123-456-7890",
+      email: "contact@example.com",
+    },
+    tags: ["Seminar", "Meetup"],
   },
 ];
 
@@ -37,17 +60,14 @@ export default function UpcomingEvents() {
   const hasEvents = events.length > 0;
 
   return (
-    <section className="w-full bg-[var(--bg-primary)] py-12 sm:py-16">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-12 sm:py-16">
+      <div className="">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-wider text-[var(--color-primary)]">
-              Upcoming Events
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)]">
-              Stay connected with GBA
+          <div className="space-y-2 flex flex-col items-center gap-4 w-full">
+            <h2 className="text-3xl sm:text-4xl font-bold text-primary">
+              Our Upcoming Events
             </h2>
-            <p className="text-[var(--text-secondary)] max-w-2xl">
+            <p className="text-secondary">
               Explore our latest gatherings, seminars, and activities designed
               to strengthen our community.
             </p>
@@ -66,7 +86,27 @@ export default function UpcomingEvents() {
             </div>
           ) : (
             <article className="card bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+              <div className="mb-6 w-full h-fit relative">
+                <Image
+                  src={nextEvent.image}
+                  alt={nextEvent.title}
+                  width={500}
+                  height={300}
+                  className="w-full rounded-xl"
+                />
+                <div className="absolute bottom-0 flex items-center justify-between left-0 w-full bg-base-200/50 p-2">
+                  <div className="">
+                    <p className="text-sm sm:text-base font-bold text-white">
+                      {nextEvent.date}
+                    </p>
+                    <p className="text-sm text-white">{nextEvent.time}</p>
+                  </div>
+                  <div className="">
+                    <p className="text-sm text-white">{nextEvent.location}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
                 <div className="space-y-3">
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
@@ -82,36 +122,61 @@ export default function UpcomingEvents() {
                     {nextEvent.description}
                   </p>
                 </div>
-                <div className="space-y-2 text-left sm:text-right">
-                  <p className="text-base sm:text-lg font-semibold text-[var(--text-primary)]">
-                    {nextEvent.date}
-                  </p>
-                  <p className="text-sm text-[var(--text-tertiary)]">
-                    {nextEvent.time}
-                  </p>
-                  <p className="text-sm text-[var(--text-tertiary)]">
-                    {nextEvent.location}
-                  </p>
-                </div>
               </div>
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-2 text-sm text-[var(--text-tertiary)]">
-                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[var(--color-primary)]"></span>
-                  <span>Next upcoming event</span>
+              <div className="mb-3 mt-6 flex flex-col gap-6">
+                <div className="flex justify-center items-center w-full gap-3">
+                  <a
+                    href={`/events/${nextEvent.id}`}
+                    rel="noopener noreferrer"
+                    className="btn btn-primary px-4 py-2 shadow-xl"
+                  >
+                    View Details
+                  </a>
+                  {!nextEvent.registration.registration_over && (
+                    <a
+                      href={nextEvent.registration.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary px-4 py-2 shadow-xl"
+                    >
+                      Register
+                    </a>
+                  )}
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button className="btn btn-outline border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white">
-                    Show All Events
-                  </button>
-                  <button className="btn btn-primary px-4 py-2">
-                    Register
-                  </button>
+
+                <div className="w-full flex justify-between items-center">
+                  <div className="flex gap-2 border-2 shadow-xl bg-[var(--bg-secondary)] border-[var(--border-color)] p-2 rounded-xl hover:text-[var(--text-primary)] hover:bg-secondary transition-colors">
+                    <p>Phone:</p>
+                    <a href={`tel:${nextEvent.contact.phone}`}>
+                      {nextEvent.contact.phone}
+                    </a>
+                  </div>
+                  <div className="flex gap-2 border-2 shadow-xl bg-[var(--bg-secondary)] border-[var(--border-color)] p-2 rounded-xl hover:text-[var(--text-primary)] hover:bg-secondary transition-colors">
+                    <p>Email:</p>
+                    <a href={`mailto:${nextEvent.contact.email}`}>
+                      {nextEvent.contact.email}
+                    </a>
+                  </div>
+                </div>
+                <div className="w-full flex justify-center items-center">
+                  <p>
+                    Our registration is open until{" "}
+                    {nextEvent.registration.last_date}
+                  </p>
                 </div>
               </div>
             </article>
           )}
         </div>
+      </div>
+      <div className="flex justify-center mt-6">
+        <Link
+          href="/events"
+          className="btn btn-outline border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white"
+        >
+          Show All Events
+        </Link>
       </div>
     </section>
   );
