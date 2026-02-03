@@ -67,7 +67,7 @@ export default function UpcomingEvents() {
             <h2 className="text-3xl sm:text-4xl font-bold text-primary">
               Our Upcoming Events
             </h2>
-            <p className="text-secondary">
+            <p className="text-base opacity-80">
               Explore our latest gatherings, seminars, and activities designed
               to strengthen our community.
             </p>
@@ -76,16 +76,16 @@ export default function UpcomingEvents() {
 
         <div className="mt-8">
           {!hasEvents ? (
-            <div className="card bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-8 text-center">
-              <p className="text-lg font-semibold text-[var(--text-primary)]">
+            <div className="card bg-base-200 border border-primary rounded-xl p-8 text-center">
+              <p className="text-xl font-semibold text-primary">
                 No upcoming events
               </p>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              <p className="mt-2 text-base opacity-80">
                 Please check back soon for new announcements.
               </p>
             </div>
           ) : (
-            <article className="card bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow">
+            <article className="card bg-base-200 border border-primary rounded-xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow">
               <div className="mb-6 w-full h-fit relative">
                 <Image
                   src={nextEvent.image}
@@ -115,10 +115,10 @@ export default function UpcomingEvents() {
                   >
                     {nextEvent.category}
                   </span>
-                  <h3 className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)]">
+                  <h3 className="text-2xl sm:text-3xl font-semibold text-primary">
                     {nextEvent.title}
                   </h3>
-                  <p className="text-[var(--text-secondary)] leading-relaxed">
+                  <p className="text-base opacity-80 leading-relaxed">
                     {nextEvent.description}
                   </p>
                 </div>
@@ -146,13 +146,13 @@ export default function UpcomingEvents() {
                 </div>
 
                 <div className="w-full flex justify-between items-center">
-                  <div className="flex gap-2 border-2 shadow-xl bg-[var(--bg-secondary)] border-[var(--border-color)] p-2 rounded-xl hover:text-[var(--text-primary)] hover:bg-secondary transition-colors">
+                  <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
                     <p>Phone:</p>
                     <a href={`tel:${nextEvent.contact.phone}`}>
                       {nextEvent.contact.phone}
                     </a>
                   </div>
-                  <div className="flex gap-2 border-2 shadow-xl bg-[var(--bg-secondary)] border-[var(--border-color)] p-2 rounded-xl hover:text-[var(--text-primary)] hover:bg-secondary transition-colors">
+                  <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
                     <p>Email:</p>
                     <a href={`mailto:${nextEvent.contact.email}`}>
                       {nextEvent.contact.email}
@@ -173,7 +173,7 @@ export default function UpcomingEvents() {
       <div className="flex justify-center mt-6">
         <Link
           href="/events"
-          className="btn btn-outline border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white"
+          className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-white"
         >
           Show All Events
         </Link>

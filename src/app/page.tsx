@@ -1,6 +1,8 @@
 import Carousel from "@/components/Carousel/Carousel";
 import HomeNavbar from "../components/HomeNavbar/Navbar";
 import UpcomingEvents from "@/components/UpcomingEvents/UpcomingEvents";
+import MessagesSection from "@/components/MessagesSection/MessagesSection";
+import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
   return (
@@ -9,6 +11,8 @@ export default function Home() {
         <HomeNavbar />
         <Carousel />
         <UpcomingEvents />
+        <MessagesSection />
+        <Footer />
       </main>
     </div>
   );
