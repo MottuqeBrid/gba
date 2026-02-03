@@ -8,7 +8,7 @@ export default function HomeNavbar() {
       <li>
         <NavLink
           href="/"
-          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
         >
           Home
         </NavLink>
@@ -16,15 +16,23 @@ export default function HomeNavbar() {
       <li>
         <NavLink
           href="/about"
-          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
         >
           About
         </NavLink>
       </li>
       <li>
         <NavLink
+          href="/events"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
+        >
+          Events
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
           href="/gallery"
-          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
         >
           Gallery
         </NavLink>
@@ -32,9 +40,17 @@ export default function HomeNavbar() {
       <li>
         <NavLink
           href="/members"
-          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
         >
           Members
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          href="/admin"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
+        >
+          Admin
         </NavLink>
       </li>
       {/* <li>
@@ -51,7 +67,7 @@ export default function HomeNavbar() {
   );
 
   return (
-    <div className="bg-base-100 shadow-sm">
+    <div className="bg-base-100/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
       <div className="navbar max-w-7xl mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
