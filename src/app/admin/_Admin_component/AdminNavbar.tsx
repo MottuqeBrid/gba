@@ -7,6 +7,7 @@ export default function AdminNavbar() {
     { href: "/admin", label: "Dashboard" },
     { href: "/admin/events", label: "Manage Events" },
     { href: "/admin/members", label: "Manage Members" },
+    { href: "/admin/gallery", label: "Manage Gallery" },
     { href: "/admin/settings", label: "Settings" },
   ];
 
