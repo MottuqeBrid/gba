@@ -2,19 +2,40 @@ import Logo from "../Logo/Logo";
 import NavLink from "../NavLink/NavLink";
 
 export default function HomeNavbar() {
+  // Navlinks
   const Navlinks = (
     <>
       <li>
-        <NavLink href="/">Home</NavLink>
+        <NavLink
+          href="/"
+          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+        >
+          Home
+        </NavLink>
       </li>
       <li>
-        <NavLink href="/about">About</NavLink>
+        <NavLink
+          href="/about"
+          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+        >
+          About
+        </NavLink>
       </li>
       <li>
-        <NavLink href="/gallery">Gallery</NavLink>
+        <NavLink
+          href="/gallery"
+          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+        >
+          Gallery
+        </NavLink>
       </li>
       <li>
-        <NavLink href="/members">Members</NavLink>
+        <NavLink
+          href="/members"
+          className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline"
+        >
+          Members
+        </NavLink>
       </li>
       {/* <li>
         <details>
@@ -30,8 +51,8 @@ export default function HomeNavbar() {
   );
 
   return (
-    <div>
-      <div className="navbar bg-base-100 shadow-sm">
+    <div className="bg-base-100 shadow-sm">
+      <div className="navbar max-w-7xl mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
             <div
@@ -39,6 +60,7 @@ export default function HomeNavbar() {
               role="button"
               className="btn btn-secondary btn-ghost lg:hidden"
             >
+              {/* menu icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -79,9 +101,9 @@ export default function HomeNavbar() {
               {Navlinks}
             </ul>
           </div>
-        </div>
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">{Navlinks}</ul>
+          <div className="navbar-center hidden lg:flex">
+            <ul className="menu menu-horizontal px-1">{Navlinks}</ul>
+          </div>
         </div>
         <div className="navbar-end">
           <Logo href="/" size="md" />

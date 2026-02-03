@@ -124,14 +124,14 @@ h3 {
 }
 
 /* Paragraphs */
-p {
+/* p {
   @apply text-[var(--text-secondary)] leading-relaxed;
-}
+} */
 
 /* Links */
-a {
+/* a {
   @apply text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] underline-offset-2 hover:underline;
-}
+} */
 
 /* Buttons - Using DaisyUI classes with custom colors */
 .btn {
