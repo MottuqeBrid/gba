@@ -32,9 +32,9 @@ export default function MessagesSection() {
                 Message from Advisor
               </h3>
               <p className="text-(--text-secondary) mb-6 leading-relaxed">
-                "Our community thrives on the dedication and passion of its
+                &quot;Our community thrives on the dedication and passion of its
                 members. Together, we are building a legacy of excellence and
-                mutual support that will inspire generations to come."
+                mutual support that will inspire generations to come.&quot;
               </p>
               <div>
                 {/* <button className="btn btn-primary px-6">
