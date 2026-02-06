@@ -41,6 +41,9 @@ const MembersSchema = new mongoose.Schema(
       instagram: {
         type: String,
       },
+      website: {
+        type: String,
+      },
     },
   },
   {

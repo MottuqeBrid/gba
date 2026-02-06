@@ -10,6 +10,9 @@ import {
   FaPhone,
   FaTimes,
 } from "react-icons/fa";
+import Swal from "sweetalert2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface Member {
   _id: string;
@@ -26,6 +29,7 @@ interface Member {
     twitter?: string;
     facebook?: string;
     instagram?: string;
+    website?: string;
   };
 }
 
@@ -38,6 +42,7 @@ export default function Page() {
 
   // Form State
   const [formData, setFormData] = useState({
+    _id: "",
     fullName: "",
     email: "",
     phone: "",
@@ -46,26 +51,35 @@ export default function Page() {
     position: "",
     photo: "",
     status: "Active",
-    social: { linkedin: "", twitter: "", facebook: "", instagram: "" },
+    social: {
+      linkedin: "",
+      twitter: "",
+      facebook: "",
+      instagram: "",
+      website: "",
+    },
   });
 
   // Fetch Members
   const fetchMembers = async () => {
     try {
       const res = await fetch("/api/members");
-      console.log(res);
       const data = await res.json();
-      console.log(data);
       if (data.success) {
         setMembers(data.data);
       }
     } catch (error) {
-      console.error("Failed to fetch members:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to fetch members",
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch Members first time
   useEffect(() => {
     fetchMembers();
   }, []);
@@ -75,7 +89,9 @@ export default function Page() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    if (["linkedin", "twitter", "facebook", "instagram"].includes(name)) {
+    if (
+      ["linkedin", "twitter", "facebook", "instagram", "website"].includes(name)
+    ) {
       setFormData((prev) => ({
         ...prev,
         social: { ...prev.social, [name]: value },
@@ -85,41 +101,56 @@ export default function Page() {
     }
   };
 
+  // Submit Handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Validation could go here
-      if (!formData.fullName || !formData.email)
-        return alert("Name and Email are required");
-
-      // Since the current router structure provided only has GET, POST, DELETE and no specific PUT logic shown fully or ID param handling for updates in snippets,
-      // we assume standard REST for now. If editing, we might need to adjust based on actual API capability (e.g., passing ID in body vs URL).
-      // Based on previous snippets, only POST (create) and DELETE were explicit. I will assume for Edit we might need to handle it or it's a TBD feature.
-      // For now, let's implement Create (POST) and simulated Update logic if API supports it later or just re-create.
-
-      const method = "POST";
-      const body = JSON.stringify(formData);
-
-      // NOTE: The previous context showed router.ts having POST for create. It didn't explicitly return PUT.
-      // We will stick to Create logic for new and alert for edit until backend is confirmed,
-      // OR we can guess/try to send a body with ID for update if the backend handles it.
-      // Given the snippets, let's strictly handle CREATE (POST) and DELETE.
+      // Validation Name, Email, Position and Batch are required validation here
+      if (
+        !formData.fullName ||
+        !formData.email ||
+        !formData.position ||
+        !formData.batch
+      )
+        return Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "Name, Email, Position and Batch are required",
+        });
 
       if (editingMember) {
-        // If we had an UPDATE endpoint:
-        // method = "PUT";
-        // body = JSON.stringify({ ...formData, id: editingMember._id });
-        alert(
-          "Update functionality requires backend implementation. This is a UI demo for Edit.",
-        );
+        // Update Member
+        const res = await fetch("/api/members", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        const result = await res.json();
+        if (result.success) {
+          fetchMembers();
+          closeModal();
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: result.message || "Member updated successfully",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: result.message || "Failed to update member",
+          });
+        }
         setIsModalOpen(false);
         return;
       }
+      // Create New Member
 
+      const { _id, ...rest } = formData;
       const res = await fetch("/api/members", {
-        method,
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body,
+        body: JSON.stringify(rest),
       });
 
       const result = await res.json();
@@ -127,29 +158,57 @@ export default function Page() {
         fetchMembers();
         closeModal();
       } else {
-        alert(result.message || "Failed to save member");
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: result.message || "Failed to save member",
+        });
       }
     } catch (error) {
-      console.error("Error saving member:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to save member",
+      });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this member?")) return;
     try {
-      const res = await fetch("/api/members", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await fetch("/api/members", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id }),
+          });
+          const result = await res.json();
+          if (result.success) {
+            fetchMembers();
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error!",
+              text: result.message || "Failed to delete member",
+            });
+          }
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
       });
-      const result = await res.json();
-      if (result.success) {
-        fetchMembers();
-      } else {
-        alert(result.message);
-      }
     } catch (error) {
-      console.error("Error deleting member:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to delete member",
+      });
     }
   };
 
@@ -157,6 +216,7 @@ export default function Page() {
     if (member) {
       setEditingMember(member);
       setFormData({
+        _id: member._id,
         fullName: member.fullName,
         email: member.email,
         phone: member.phone,
@@ -170,11 +230,13 @@ export default function Page() {
           twitter: member.social?.twitter || "",
           facebook: member.social?.facebook || "",
           instagram: member.social?.instagram || "",
+          website: member.social?.website || "",
         },
       });
     } else {
       setEditingMember(null);
       setFormData({
+        _id: "",
         fullName: "",
         email: "",
         phone: "",
@@ -183,7 +245,13 @@ export default function Page() {
         position: "",
         photo: "",
         status: "Active",
-        social: { linkedin: "", twitter: "", facebook: "", instagram: "" },
+        social: {
+          linkedin: "",
+          twitter: "",
+          facebook: "",
+          instagram: "",
+          website: "",
+        },
       });
     }
     setIsModalOpen(true);
@@ -232,7 +300,36 @@ export default function Page() {
 
       {/* List / Table */}
       {loading ? (
-        <div className="text-center py-10">Loading members...</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="card bg-base-100 shadow-xl border border-base-200"
+            >
+              <div className="card-body">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <Skeleton circle width={48} height={48} />
+                    <div>
+                      <Skeleton width={120} height={20} />
+                      <Skeleton width={80} height={16} className="mt-1" />
+                    </div>
+                  </div>
+                  <Skeleton width={60} height={24} borderRadius={12} />
+                </div>
+                <div className="mt-4 space-y-2">
+                  <Skeleton width="80%" height={14} />
+                  <Skeleton width="60%" height={14} />
+                  <Skeleton width="90%" height={14} />
+                </div>
+                <div className="card-actions justify-end mt-6">
+                  <Skeleton width={32} height={32} />
+                  <Skeleton width={32} height={32} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredMembers.map((member) => (
@@ -449,6 +546,16 @@ export default function Page() {
                   name="instagram"
                   className="input input-bordered"
                   value={formData.social.instagram}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">Website</label>
+                <input
+                  name="website"
+                  type="url"
+                  className="input input-bordered"
+                  value={formData.social.website}
                   onChange={handleInputChange}
                 />
               </div>

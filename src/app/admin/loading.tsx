@@ -4,11 +4,11 @@ import Logo from "@/components/Logo/Logo";
 
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 right-10 w-32 h-32 bg-primary rounded-full opacity-5 blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-40 h-40 bg-secondary rounded-full opacity-5 blur-3xl"></div>
+        <div className="absolute top-10 right-10 w-32 h-32 bg-[var(--color-primary)] rounded-full opacity-5 blur-3xl"></div>
+        <div className="absolute bottom-10 left-10 w-40 h-40 bg-[var(--color-secondary)] rounded-full opacity-5 blur-3xl"></div>
       </div>
 
       {/* Main loading content */}
@@ -17,7 +17,7 @@ export default function Loading() {
           {/* Logo with rotating animation */}
           <div className="flex justify-center">
             <div className="relative w-24 h-24 sm:w-32 sm:h-32">
-              <div className="absolute inset-0 animate-spin rounded-full border-4 border-primary border-t-secondary border-r-accent"></div>
+              <div className="absolute inset-0 animate-spin rounded-full border-4 border-[var(--border-color)] border-t-[var(--color-primary)] border-r-[var(--color-accent)]"></div>
               <div className="absolute inset-2 flex items-center justify-center">
                 <Logo size="md" />
               </div>
@@ -26,29 +26,29 @@ export default function Loading() {
 
           {/* Loading text */}
           <div className="space-y-3">
-            <h2 className="text-xl sm:text-2xl font-bold text-primary">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
               Loading
             </h2>
             <div className="flex justify-center gap-1">
               <span
-                className="inline-block w-2 h-2 bg-primary rounded-full animate-bounce"
+                className="inline-block w-2 h-2 bg-[var(--color-primary)] rounded-full animate-bounce"
                 style={{ animationDelay: "0s" }}
               ></span>
               <span
-                className="inline-block w-2 h-2 bg-secondary rounded-full animate-bounce"
+                className="inline-block w-2 h-2 bg-[var(--color-secondary)] rounded-full animate-bounce"
                 style={{ animationDelay: "0.2s" }}
               ></span>
               <span
-                className="inline-block w-2 h-2 bg-accent rounded-full animate-bounce"
+                className="inline-block w-2 h-2 bg-[var(--color-accent)] rounded-full animate-bounce"
                 style={{ animationDelay: "0.4s" }}
               ></span>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-[var(--bg-secondary)] rounded-full h-2 overflow-hidden">
             <div
-              className="h-full bg-linear-to-r from-primary via-secondary to-accent rounded-full"
+              className="h-full bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] rounded-full"
               style={{
                 animation: "shimmer 2s infinite",
               }}
@@ -56,7 +56,7 @@ export default function Loading() {
           </div>
 
           {/* Status message */}
-          <p className="text-sm sm:text-base text-secondary">
+          <p className="text-sm sm:text-base text-[var(--text-secondary)]">
             Please wait while we prepare your content...
           </p>
         </div>

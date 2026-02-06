@@ -122,3 +122,57 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { _id, ...rest } = body;
+    if (!_id) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "Missing required fields.",
+        }),
+        {
+          status: 400,
+        },
+      );
+    }
+    await connectDB();
+    const updatedMember = await MembersModel.findById(_id);
+    if (!updatedMember) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "Member not found.",
+        }),
+        {
+          status: 404,
+        },
+      );
+    }
+    updatedMember.set(rest);
+    await updatedMember.save();
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "Member updated successfully.",
+        data: updatedMember,
+      }),
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: "Internal server error.",
+      }),
+      {
+        status: 500,
+      },
+    );
+  }
+}
