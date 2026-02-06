@@ -4,7 +4,7 @@ import GalleryModel from "@/models/Gallery.Model";
 export async function GET(request: Request) {
   try {
     await connectDB();
-    const gallery = await GalleryModel.find();
+    const gallery = await GalleryModel.find().sort({ createdAt: -1 });
     return new Response(
       JSON.stringify({
         success: true,
@@ -91,6 +91,47 @@ export async function DELETE(request: Request) {
         success: true,
         message: "Gallery deleted successfully.",
         data: deletedGallery,
+      }),
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: "Internal server error.",
+      }),
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { _id, ...rest } = body;
+    if (!_id) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "Missing required fields.",
+        }),
+        {
+          status: 400,
+        },
+      );
+    }
+    await connectDB();
+    const updatedGallery = await GalleryModel.findByIdAndUpdate(_id, rest);
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "Gallery updated successfully.",
+        data: updatedGallery,
       }),
       {
         status: 200,
