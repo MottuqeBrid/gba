@@ -104,27 +104,27 @@ export default function Page() {
             <h2 className="text-3xl font-bold text-center mb-10 text-(--color-secondary)">
               Executive Committee
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
               {executives.map((exec) => (
                 <div
                   key={exec._id}
-                  className="card bg-base-100 shadow-xl border border-base-200 hover:border-(--color-primary) transition-all duration-300"
+                  className="card bg-base-100 shadow-xl border border-base-200 hover:border-primary transition-all duration-300 overflow-hidden"
                 >
                   <figure className="px-10 pt-10">
                     <div className="avatar">
-                      <div className="w-32 h-32 rounded-full ring-4 ring-(--color-primary) ring-offset-base-100 ring-offset-2">
+                      <div className="w-full h-full rounded-full ring-4 ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden object-cover mb-2.5">
                         <Image
                           src={exec.photo}
                           alt={exec.fullName}
-                          width={128}
-                          height={128}
-                          className="rounded-full"
+                          width={600}
+                          height={600}
+                          className="rounded-full hover:scale-110 transition-all duration-300 hover:grayscale cursor-pointer w-full h-full object-cover"
                         />
                       </div>
                     </div>
                   </figure>
-                  <div className="card-body items-center text-center">
-                    <h3 className="card-title text-2xl font-bold">
+                  <div className="card-body items-center space-y-2 text-center">
+                    <h3 className="card-title text-2xl font-bold hover:grayscale cursor-pointer">
                       {exec.fullName}
                     </h3>
                     <p className="text-(--color-primary) font-semibold uppercase tracking-wide text-sm">
@@ -143,7 +143,7 @@ export default function Page() {
                         <a
                           href={exec.social.linkedin}
                           target="_blank"
-                          className="hover:text-(--color-primary)"
+                          className="hover:text-blue-600"
                         >
                           <FaLinkedin size={20} />
                         </a>
@@ -152,7 +152,7 @@ export default function Page() {
                         <a
                           href={exec.social.twitter}
                           target="_blank"
-                          className="hover:text-(--color-primary)"
+                          className="hover:text-blue-400"
                         >
                           <FaTwitter size={20} />
                         </a>
@@ -170,7 +170,7 @@ export default function Page() {
                         <a
                           href={exec.social.instagram}
                           target="_blank"
-                          className="hover:text-(--color-primary)"
+                          className="hover:text-pink-600"
                         >
                           <FaInstagram size={20} />
                         </a>
@@ -179,7 +179,7 @@ export default function Page() {
                         <a
                           href={exec.social.website}
                           target="_blank"
-                          className="hover:text-(--color-primary)"
+                          className="hover:text-blue-800"
                         >
                           <FaGlobe size={20} />
                         </a>
@@ -201,41 +201,106 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {activeMembers.slice(0, 8).map(
-                (
-                  member, // Showing top 8 active members for brevity in grid
-                ) => (
-                  <div
-                    key={member._id}
-                    className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-200"
-                  >
-                    <div className="card-body p-6 flex flex-row items-center gap-4">
-                      <div className="avatar placeholder">
-                        <div className="bg-(--color-secondary) text-neutral-content w-12 rounded-full">
-                          <span className="text-xs">
-                            <Image
-                              width={400}
-                              height={400}
-                              src={member.photo}
-                              alt={member.fullName}
-                              className="rounded-full"
-                            />
-                          </span>
-                        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activeMembers.map((member) => (
+                <div
+                  key={member._id}
+                  className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-200"
+                >
+                  <div className="card-body p-6 flex items-center gap-4">
+                    <div className="">
+                      <div className="text-neutral-content w-full  h-full rounded-full  bg-transparent border-accent border-6 overflow-hidden">
+                        <Image
+                          width={400}
+                          height={400}
+                          src={member.photo}
+                          alt={member.fullName}
+                          placeholder="blur"
+                          blurDataURL={member.photo}
+                          className="rounded-full hover:translate-y-2 hover:scale-110 shadow-2xl cursor-pointer hover:grayscale"
+                        />
                       </div>
-                      <div>
-                        <h3 className="font-bold text-(--text-primary)">
-                          {member.fullName}
-                        </h3>
-                        <p className="text-xs text-(--text-secondary)">
-                          {member.discipline}
+                    </div>
+                    <div className="flex flex-col gap-2 w-full">
+                      <h3 className="font-bold text-primary">
+                        {member.fullName}
+                      </h3>
+                      <div className="flex justify-between w-full">
+                        <p className="text-lg text-primary font-bold">
+                          {member.position}
                         </p>
+                        <p className="text-lg badge badge-success py-1 text-right">
+                          <span className="border-4 border-green-100 rounded-full p-1"></span>
+                          Active
+                        </p>
+                      </div>
+                      <div className="flex justify-between w-full">
+                        <p className="text-lg italic">{member.discipline}</p>
+                        <p className="text-lg text-right">
+                          {member.batch}-BATCH
+                        </p>
+                      </div>
+                      {member.email && (
+                        <div className="flex flex-col mt-4 gap-1 w-full overflow-hidden">
+                          <a
+                            href={`mailto:${member.email}`}
+                            className="text-lg shadow-sm p-2 rounded-2xl bg-accent/50 shadow-black/20"
+                          >
+                            {member.email}
+                          </a>
+                        </div>
+                      )}
+                      <div className="flex w-full justify-around items-center my-4">
+                        {member.social.linkedin && (
+                          <a
+                            href={member.social.linkedin}
+                            className="hover:text-blue-600 hover:-rotate-8"
+                            target="_blank"
+                          >
+                            <FaLinkedin size={20} />
+                          </a>
+                        )}
+                        {member.social.twitter && (
+                          <a
+                            href={member.social.twitter}
+                            target="_blank"
+                            className="hover:text-blue-400 hover:-rotate-8"
+                          >
+                            <FaTwitter size={20} />
+                          </a>
+                        )}
+                        {member.social.facebook && (
+                          <a
+                            href={member.social.facebook}
+                            target="_blank"
+                            className="hover:text-blue-800 hover:-rotate-8"
+                          >
+                            <FaFacebook size={20} />
+                          </a>
+                        )}
+                        {member.social.instagram && (
+                          <a
+                            href={member.social.instagram}
+                            target="_blank"
+                            className="hover:text-pink-600 hover:-rotate-8"
+                          >
+                            <FaInstagram size={20} />
+                          </a>
+                        )}
+                        {member.social.website && (
+                          <a
+                            href={member.social.website}
+                            target="_blank"
+                            className="hover:text-blue-800 hover:-rotate-8"
+                          >
+                            <FaGlobe size={20} />
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
-                ),
-              )}
+                </div>
+              ))}
             </div>
           </section>
           {/* 3. Searchable Table */}
@@ -278,7 +343,14 @@ export default function Page() {
                           <div className="flex items-center gap-3">
                             <div className="avatar">
                               <div className="mask mask-squircle w-10 h-10">
-                                <img src={member.photo} alt={member.fullName} />
+                                <Image
+                                  width={128}
+                                  height={128}
+                                  placeholder="blur"
+                                  blurDataURL={member.photo}
+                                  src={member.photo}
+                                  alt={member.fullName}
+                                />
                               </div>
                             </div>
                             <div>
@@ -289,7 +361,9 @@ export default function Page() {
                             </div>
                           </div>
                         </td>
-                        <td>{member.discipline}</td>
+                        <td>
+                          {member.discipline} - {member.batch}
+                        </td>
                         <td>
                           <div
                             className={`badge ${member.status === "Active" ? "badge-success text-white" : "badge-ghost"} badge-sm`}
@@ -298,9 +372,14 @@ export default function Page() {
                           </div>
                         </td>
                         <td>
-                          <button className="btn btn-ghost btn-xs text-(--color-primary)">
-                            <FaEnvelope className="mr-1" /> Email
-                          </button>
+                          {member.email && (
+                            <a
+                              href={`mailto:${member.email}`}
+                              className="btn btn-ghost btn-xs text-primary"
+                            >
+                              <FaEnvelope className="mr-1" /> Email
+                            </a>
+                          )}
                         </td>
                       </tr>
                     ))
