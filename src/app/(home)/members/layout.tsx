@@ -1,5 +1,3 @@
-import HomeNavbar from "@/components/HomeNavbar/Navbar";
-
 export default function HomeLayout({
   children,
 }: Readonly<{
@@ -7,8 +5,7 @@ export default function HomeLayout({
 }>) {
   return (
     <div className="min-h-screen w-full">
-      <HomeNavbar />
-      <main className="mx-auto max-w-7xl">{children}</main>
+      <div>{children}</div>
     </div>
   );
 }

@@ -145,19 +145,23 @@ export default function UpcomingEvents() {
                   )}
                 </div>
 
-                <div className="w-full flex justify-between items-center">
-                  <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
-                    <p>Phone:</p>
-                    <a href={`tel:${nextEvent.contact.phone}`}>
-                      {nextEvent.contact.phone}
-                    </a>
-                  </div>
-                  <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
-                    <p>Email:</p>
-                    <a href={`mailto:${nextEvent.contact.email}`}>
-                      {nextEvent.contact.email}
-                    </a>
-                  </div>
+                <div className="w-full flex justify-between items-center flex-col sm:flex-row gap-3">
+                  {nextEvent.contact.phone && (
+                    <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
+                      <p>Phone:</p>
+                      <a href={`tel:${nextEvent.contact.phone}`}>
+                        {nextEvent.contact.phone}
+                      </a>
+                    </div>
+                  )}
+                  {nextEvent.contact.email && (
+                    <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
+                      <p>Email:</p>
+                      <a href={`mailto:${nextEvent.contact.email}`}>
+                        {nextEvent.contact.email}
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="w-full flex justify-center items-center">
                   <p>

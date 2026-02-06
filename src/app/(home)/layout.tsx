@@ -1,14 +1,10 @@
 import HomeNavbar from "@/components/HomeNavbar/Navbar";
 
-export default function HomeLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen w-full">
+    <section>
       <HomeNavbar />
       <main className="mx-auto max-w-7xl">{children}</main>
-    </div>
+    </section>
   );
 }
