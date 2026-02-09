@@ -41,10 +41,12 @@ export default function Logo({
       <Image
         src="/logo.jpg"
         alt={alt}
-        // placeholder="blur"
+        placeholder="blur"
+        blurDataURL="/logo.jpg"
+        loading="eager"
         width={sizeConfig.width}
         height={sizeConfig.height}
-        // priority
+        priority
         className="rounded-full object-cover shadow-lg hover:shadow-xl transition-shadow duration-300"
         sizes={`(max-width: 640px) ${sizeConfig.width * 0.75}px, ${sizeConfig.width}px`}
       />

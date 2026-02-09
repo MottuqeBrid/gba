@@ -240,6 +240,8 @@ export default function Page() {
                   <Image
                     src={item.image}
                     alt={item.title}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    loading="eager"
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
@@ -305,24 +307,25 @@ export default function Page() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500 hidden sm:inline">
+            <div className="flex items-center gap-2 w-1/3">
+              <div className="text-sm text-gray-500 hidden sm:inline sm:w-1/3">
                 Items per page:
-              </span>
+              </div>
               <select
-                className="select select-bordered select-sm rounded-full"
+                className="select select-bordered select-sm rounded-full sm:w-2/3"
                 value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e.target.value));
                   setCurrentPage(1);
                 }}
               >
+                <option value={galleryItems.length}>All</option>
                 <option value={6}>6</option>
                 <option value={12}>12</option>
-                <option value={24}>24</option>
-                <option value={48}>48</option>
-                <option value={96}>96</option>
-                <option value={192}>192</option>
+                {galleryItems.length > 50 && <option value={24}>24</option>}
+                {galleryItems.length > 100 && <option value={48}>48</option>}
+                {galleryItems.length > 200 && <option value={96}>96</option>}
+                {galleryItems.length > 500 && <option value={192}>192</option>}
               </select>
             </div>
           </div>
