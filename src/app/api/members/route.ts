@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/connectDB";
 import MembersModel from "@/models/Members.Model";
+import { isAdmin } from "@/lib/isAdmin";
 
 export async function GET(request: Request) {
   try {
@@ -41,6 +42,12 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!(await isAdmin())) {
+    return new Response(
+      JSON.stringify({ success: false, message: "Unauthorized" }),
+      { status: 401 },
+    );
+  }
   try {
     const body = await request.json();
     const { fullName, email, phone, discipline, batch, position, social } =
@@ -83,6 +90,12 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!(await isAdmin())) {
+    return new Response(
+      JSON.stringify({ success: false, message: "Unauthorized" }),
+      { status: 401 },
+    );
+  }
   try {
     const body = await request.json();
     const { id } = body;
@@ -124,6 +137,12 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!(await isAdmin())) {
+    return new Response(
+      JSON.stringify({ success: false, message: "Unauthorized" }),
+      { status: 401 },
+    );
+  }
   try {
     const body = await request.json();
     const { _id, ...rest } = body;
