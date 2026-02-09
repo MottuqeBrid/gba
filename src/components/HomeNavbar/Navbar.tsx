@@ -1,5 +1,6 @@
 import Logo from "../Logo/Logo";
 import NavLink from "../NavLink/NavLink";
+import ThemeToggle from "../ThemeTogle/ThemeTogle";
 
 export default function HomeNavbar() {
   // Navlinks
@@ -11,14 +12,6 @@ export default function HomeNavbar() {
           className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
         >
           Home
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          href="/about"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          About
         </NavLink>
       </li>
       <li>
@@ -43,6 +36,14 @@ export default function HomeNavbar() {
           className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
         >
           Members
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          href="/about"
+          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
+        >
+          About
         </NavLink>
       </li>
       <li>
@@ -122,6 +123,10 @@ export default function HomeNavbar() {
           </div>
         </div>
         <div className="navbar-end">
+          {/* <ThemeToggle variant="dropdown" />
+          <ThemeToggle />
+          <ThemeToggle variant="button" size="lg" /> */}
+          <ThemeToggle variant="dropdown" showLabel />
           <Logo href="/" size="md" />
         </div>
       </div>
