@@ -25,8 +25,11 @@ const navItems = [
   // { href: "/admin", label: "Admin", icon: <FaUserShield /> },
 ];
 
+import useAuth from "@/app/hooks/useAuth";
+
 export default function HomeNavbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <div className="bg-base-100/90 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-base-200">
@@ -97,13 +100,64 @@ export default function HomeNavbar() {
         <div className="navbar-end gap-2 sm:gap-4">
           <ThemeToggle variant="button" size="md" />
 
-          <Link
-            href="/admin"
-            className="btn btn-primary btn-sm sm:btn-md rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:scale-105"
-          >
-            <span className="hidden sm:inline">Join Us</span>
-            <FaUsers className="sm:hidden" size={18} />
-          </Link>
+          {user ? (
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar border-2 border-primary/20 hover:border-primary transition-all duration-300"
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    alt={user.fullName}
+                    src={
+                      user.photo ||
+                      `https://ui-avatars.com/api/?name=${user.fullName}&background=random`
+                    }
+                  />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 z-50 p-3 shadow-2xl bg-base-100 rounded-2xl w-52 gap-1 border border-base-200"
+              >
+                <li className="px-4 py-3 border-b border-base-200 mb-2">
+                  <p className="font-bold text-primary truncate max-w-full">
+                    {user.fullName}
+                  </p>
+                  <p className="text-xs opacity-60 truncate max-w-full">
+                    {user.email}
+                  </p>
+                </li>
+                <li>
+                  <Link
+                    href={user.role === "admin" ? "/admin" : "/dashboard"}
+                    className="flex items-center gap-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
+                  >
+                    <FaUserShield className="text-primary" />
+                    {user.role === "admin" ? "Admin Panel" : "My Dashboard"}
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={logout}
+                    className="flex items-center gap-3 py-2 rounded-lg hover:bg-error/10 text-error transition-colors w-full text-left"
+                  >
+                    <FaTimes />
+                    Sign Out
+                  </button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="btn btn-primary btn-sm sm:btn-md rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:scale-105"
+            >
+              <span className="hidden sm:inline">Join Us</span>
+              <FaUsers className="sm:hidden" size={18} />
+            </Link>
+          )}
         </div>
       </div>
     </div>

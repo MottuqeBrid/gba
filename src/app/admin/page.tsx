@@ -15,13 +15,16 @@ import {
   FaCog,
   FaHome,
   FaSignOutAlt,
+  FaUserShield,
 } from "react-icons/fa";
 import AdminCarouselPage from "./_Admin_component/AdminCarousel/AdminCarousel";
 import AdminMessages from "./_Admin_component/AdminMessages/AdminMessages";
 import AdminContact from "./_Admin_component/AdminContact/AdminContact";
 import AdminAbout from "./_Admin_component/AdminAbout/AdminAbout";
+import AdminUsers from "./_Admin_component/AdminUsers/AdminUsers";
+import { useAuth } from "@/context/AuthContext";
 
-type TabType = "carousel" | "messages" | "contact" | "about";
+type TabType = "carousel" | "messages" | "contact" | "about" | "users";
 
 interface TabItem {
   id: TabType;
@@ -31,6 +34,12 @@ interface TabItem {
 }
 
 const tabs: TabItem[] = [
+  {
+    id: "users",
+    label: "All Users",
+    icon: <FaUsers size={18} />,
+    component: <AdminUsers />,
+  },
   {
     id: "carousel",
     label: "Carousel",
@@ -59,7 +68,12 @@ const tabs: TabItem[] = [
 
 const quickLinks = [
   { href: "/admin/events", label: "Events", icon: <FaCalendarAlt size={16} /> },
-  { href: "/admin/members", label: "Members", icon: <FaUsers size={16} /> },
+  { href: "/admin/members", label: "Committee", icon: <FaUsers size={16} /> },
+  {
+    href: "/admin/users",
+    label: "Users List",
+    icon: <FaUserShield size={16} />,
+  },
   {
     href: "/admin/gallery",
     label: "Gallery",
@@ -70,6 +84,7 @@ const quickLinks = [
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("carousel");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { logout } = useAuth();
 
   const activeComponent = tabs.find((tab) => tab.id === activeTab)?.component;
 
@@ -193,13 +208,10 @@ export default function AdminDashboard() {
                 <FaHome className="text-info" size={16} />
                 <span>View Site</span>
               </Link>
-              <Link
-                href="/"
-                className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-error/10 text-error transition-colors text-sm"
-              >
+              <div className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-error/10 text-error transition-colors text-sm">
                 <FaSignOutAlt size={16} />
-                <span>Logout</span>
-              </Link>
+                <button onClick={logout}>Logout</button>
+              </div>
             </div>
             <p className="text-[10px] text-base-content/40 text-center mt-3">
               © 2026 GBA
@@ -253,9 +265,9 @@ export default function AdminDashboard() {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/" className="text-error">
+                      <button onClick={() => logout()} className="text-error">
                         <FaSignOutAlt size={14} /> Logout
-                      </Link>
+                      </button>
                     </li>
                   </ul>
                 </div>

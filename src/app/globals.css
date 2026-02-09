@@ -193,3 +193,7 @@ hr {
 ::-webkit-scrollbar-thumb {
   @apply bg-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary-dark)];
 }
+
+.padding-inline {
+  padding-inline: 0;
+}

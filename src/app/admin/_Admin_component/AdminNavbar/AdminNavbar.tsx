@@ -15,6 +15,7 @@ import {
   FaSignOutAlt,
   FaTachometerAlt,
 } from "react-icons/fa";
+import { useAuth } from "@/context/AuthContext";
 
 interface NavItem {
   href: string;
@@ -37,6 +38,7 @@ const adminLinks: NavItem[] = [
 export default function AdminNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { logout } = useAuth();
 
   const isActive = (href: string) => {
     if (href === "/admin") {
@@ -128,9 +130,12 @@ export default function AdminNavbar() {
                 </li>
                 <div className="divider my-1"></div>
                 <li>
-                  <Link href="/" className="text-error hover:bg-error/10 gap-2">
+                  <button
+                    onClick={() => logout()}
+                    className="text-error hover:bg-error/10 gap-2"
+                  >
                     <FaSignOutAlt size={14} /> Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -185,14 +190,13 @@ export default function AdminNavbar() {
               <FaHome size={16} className="text-info" />
               View Site
             </Link>
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
+            <div
+              onClick={() => logout()}
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-error hover:bg-error/10"
             >
               <FaSignOutAlt size={16} />
               Logout
-            </Link>
+            </div>
           </nav>
         </div>
       </div>
