@@ -1,63 +1,96 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { format } from "date-fns";
 
-interface EventItem {
-  id: string;
+interface Event {
+  _id: string;
   title: string;
-  image: string;
-  date: string;
-  time: string;
-  location: string;
-  category: "Seminar" | "Workshop" | "Meetup" | "Cultural" | "Sports";
   description: string;
-  registration: {
-    last_date: string;
-    link: string;
-    registration_over: boolean;
+  image?: string;
+  category?: string;
+  status: "upcoming" | "past";
+  upcomingEvents: boolean;
+  eventDetails?: {
+    date?: string;
+    time?: string;
+    location?: string;
   };
-  contact: {
-    phone: string;
-    email: string;
+  contactDetails?: {
+    phone?: string;
+    email?: string;
   };
-  tags: string[];
 }
 
-const events: EventItem[] = [
-  {
-    id: "1",
-    title: "Annual General Meeting",
-    image:
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=500&fit=crop",
-    date: "Mar 15, 2026",
-    time: "10:00 AM",
-    location: "KU Auditorium",
-    category: "Meetup",
-    description:
-      "Gathering of members to review milestones and set goals for the year.",
-    registration: {
-      registration_over: false,
-      last_date: "Mar 15, 2026",
-      link: "https://example.com/register",
-    },
-    contact: {
-      phone: "123-456-7890",
-      email: "contact@example.com",
-    },
-    tags: ["Seminar", "Meetup"],
-  },
-];
-
-const categoryStyles: Record<EventItem["category"], string> = {
+const categoryStyles: Record<string, string> = {
   Seminar: "bg-[var(--color-primary)]/15 text-[var(--color-primary)]",
   Workshop: "bg-[var(--color-secondary)]/15 text-[var(--color-secondary)]",
   Meetup: "bg-[var(--color-accent)]/20 text-[var(--color-accent)]",
   Cultural: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
   Sports: "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)]",
+  Conference: "bg-[var(--color-primary)]/15 text-[var(--color-primary)]",
+  Celebration: "bg-[var(--color-accent)]/15 text-[var(--color-accent)]",
+  Other: "bg-base-300 text-base-content",
 };
 
 export default function UpcomingEvents() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUpcomingEvents();
+  }, []);
+
+  const fetchUpcomingEvents = async () => {
+    try {
+      setLoading(true);
+      // Fetch only upcoming events
+      const res = await fetch("/api/events?type=upcoming");
+      const data = await res.json();
+      if (data.success) {
+        // Filter to get featured events (upcomingEvents flag) or just the first few
+        const featured = data.data.filter((e: Event) => e.upcomingEvents);
+        setEvents(featured.length > 0 ? featured : data.data.slice(0, 1));
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const nextEvent = events[0];
   const hasEvents = events.length > 0;
+
+  if (loading) {
+    return (
+      <section className="w-full py-12 sm:py-16">
+        <div className="">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2 flex flex-col items-center gap-4 w-full">
+              <h2 className="text-3xl sm:text-4xl font-bold text-primary">
+                Our Upcoming Events
+              </h2>
+              <p className="text-base opacity-80">
+                Explore our latest gatherings, seminars, and activities designed
+                to strengthen our community.
+              </p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <div className="card bg-base-200 border border-primary rounded-xl p-6 sm:p-8 animate-pulse">
+              <div className="w-full h-64 bg-base-300 rounded-xl mb-6"></div>
+              <div className="h-8 bg-base-300 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-base-300 rounded w-1/2 mb-2"></div>
+              <div className="h-4 bg-base-300 rounded w-full"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full py-12 sm:py-16">
@@ -87,34 +120,57 @@ export default function UpcomingEvents() {
           ) : (
             <article className="card bg-base-200 border border-primary rounded-xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow">
               <div className="mb-6 w-full h-fit relative">
-                <Image
-                  src={nextEvent.image}
-                  alt={nextEvent.title}
-                  width={500}
-                  height={300}
-                  className="w-full rounded-xl"
-                />
-                <div className="absolute bottom-0 flex items-center justify-between left-0 w-full bg-base-200/50 p-2">
+                {nextEvent.image ? (
+                  <Image
+                    src={nextEvent.image}
+                    alt={nextEvent.title}
+                    width={500}
+                    height={300}
+                    placeholder="blur"
+                    blurDataURL={nextEvent.image}
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    className="w-full rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-64 bg-base-300 rounded-xl flex items-center justify-center">
+                    <span className="text-lg font-bold opacity-50">
+                      No Image
+                    </span>
+                  </div>
+                )}
+                <div className="absolute bottom-0 flex items-center justify-between left-0 w-full bg-base-200/50 p-2 backdrop-blur-sm rounded-b-xl">
                   <div className="">
                     <p className="text-sm sm:text-base font-bold text-white">
-                      {nextEvent.date}
+                      {nextEvent.eventDetails?.date
+                        ? format(
+                            new Date(nextEvent.eventDetails.date),
+                            "MMM dd, yyyy",
+                          )
+                        : "Date TBA"}
                     </p>
-                    <p className="text-sm text-white">{nextEvent.time}</p>
+                    <p className="text-sm text-white">
+                      {nextEvent.eventDetails?.time || "Time TBA"}
+                    </p>
                   </div>
                   <div className="">
-                    <p className="text-sm text-white">{nextEvent.location}</p>
+                    <p className="text-sm text-white">
+                      {nextEvent.eventDetails?.location || "Location TBA"}
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
                 <div className="space-y-3">
-                  <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
-                      categoryStyles[nextEvent.category]
-                    }`}
-                  >
-                    {nextEvent.category}
-                  </span>
+                  {nextEvent.category && (
+                    <span
+                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                        categoryStyles[nextEvent.category] ||
+                        categoryStyles["Other"]
+                      }`}
+                    >
+                      {nextEvent.category}
+                    </span>
+                  )}
                   <h3 className="text-2xl sm:text-3xl font-semibold text-primary">
                     {nextEvent.title}
                   </h3>
@@ -126,48 +182,31 @@ export default function UpcomingEvents() {
 
               <div className="mb-3 mt-6 flex flex-col gap-6">
                 <div className="flex justify-center items-center w-full gap-3">
-                  <a
-                    href={`/events/${nextEvent.id}`}
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/events/${nextEvent._id}`}
                     className="btn btn-primary px-4 py-2 shadow-xl"
                   >
                     View Details
-                  </a>
-                  {!nextEvent.registration.registration_over && (
-                    <a
-                      href={nextEvent.registration.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary px-4 py-2 shadow-xl"
-                    >
-                      Register
-                    </a>
-                  )}
+                  </Link>
                 </div>
 
                 <div className="w-full flex justify-between items-center flex-col sm:flex-row gap-3">
-                  {nextEvent.contact.phone && (
+                  {nextEvent.contactDetails?.phone && (
                     <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
                       <p>Phone:</p>
-                      <a href={`tel:${nextEvent.contact.phone}`}>
-                        {nextEvent.contact.phone}
+                      <a href={`tel:${nextEvent.contactDetails.phone}`}>
+                        {nextEvent.contactDetails.phone}
                       </a>
                     </div>
                   )}
-                  {nextEvent.contact.email && (
+                  {nextEvent.contactDetails?.email && (
                     <div className="flex gap-2 border-2 shadow-xl bg-base-200 border-primary p-2 rounded-xl hover:text-primary hover:bg-secondary transition-colors">
                       <p>Email:</p>
-                      <a href={`mailto:${nextEvent.contact.email}`}>
-                        {nextEvent.contact.email}
+                      <a href={`mailto:${nextEvent.contactDetails.email}`}>
+                        {nextEvent.contactDetails.email}
                       </a>
                     </div>
                   )}
-                </div>
-                <div className="w-full flex justify-center items-center">
-                  <p>
-                    Our registration is open until{" "}
-                    {nextEvent.registration.last_date}
-                  </p>
                 </div>
               </div>
             </article>

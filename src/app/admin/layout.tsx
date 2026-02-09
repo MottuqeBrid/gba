@@ -1,4 +1,4 @@
-import AdminNavbar from "./_Admin_component/AdminNavbar";
+import AdminNavbar from "./_Admin_component/AdminNavbar/AdminNavbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

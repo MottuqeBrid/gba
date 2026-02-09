@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Logo from "../../../components/Logo/Logo";
-import NavLink from "../../../components/NavLink/NavLink";
+import Logo from "../../../../components/Logo/Logo";
+import NavLink from "../../../../components/NavLink/NavLink";
 
 export default function AdminNavbar() {
   const adminLinks = [

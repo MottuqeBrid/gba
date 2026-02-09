@@ -1,18 +1,19 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel as ReactCarousel } from "react-responsive-carousel";
 import Image from "next/image";
 import { Metadata } from "next";
 
 interface CarouselSlide {
-  src: string;
-  alt: string;
-  legend: string;
+  _id: string;
+  image: string;
+  title: string;
+  description?: string;
 }
 
 interface CarouselProps {
-  slides?: CarouselSlide[];
   autoPlay?: boolean;
   interval?: number;
   transitionTime?: number;
@@ -21,36 +22,20 @@ interface CarouselProps {
   showStatus?: boolean;
 }
 
-const defaultSlides: CarouselSlide[] = [
-  {
-    src: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=500&fit=crop",
-    alt: "Slide 1 - GBA Event",
-    legend: "GBA Events",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=500&fit=crop",
-    alt: "Slide 2 - Community",
-    legend: "Community",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=500&fit=crop",
-    alt: "Slide 3 - Activities",
-    legend: "Activities",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1200&h=500&fit=crop",
-    alt: "Slide 4 - Networking",
-    legend: "Networking",
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const res = await fetch("/api/carousel");
+  const data = await res.json();
+  const keywords: string[] = [];
+  await data.data.forEach((slide: CarouselSlide) => {
+    keywords.push(slide.title);
+    keywords.push(slide.description || "");
+  });
+  return {
+    keywords: keywords,
+  };
+}
 
-export const metadata: Metadata = {
-  title: "GBA Carousel",
-  description:
-    "A dynamic carousel component showcasing images and legends for the Greater Bogura Association Khulna University website.",
-};
 export default function Carousel({
-  slides = defaultSlides,
   autoPlay = true,
   interval = 3500,
   transitionTime = 800,
@@ -58,8 +43,46 @@ export default function Carousel({
   showThumbs = false,
   showStatus = false,
 }: CarouselProps) {
+  const [slides, setSlides] = useState<CarouselSlide[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCarouselData();
+  }, []);
+
+  const fetchCarouselData = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/carousel");
+      const data = await res.json();
+      if (data.success && data.data.length > 0) {
+        setSlides(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching carousel data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full h-56 sm:h-64 md:h-80 lg:h-96 2xl:h-screen/2 overflow-hidden rounded-lg shadow-xl border border-t-0 border-[(--border-color)] bg-base-300 animate-pulse flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
+  if (slides.length === 0) {
+    return (
+      <div className="w-full h-56 sm:h-64 md:h-80 lg:h-96 2xl:h-screen/2 overflow-hidden rounded-lg shadow-xl border border-t-0 border-[(--border-color)] bg-base-200 flex items-center justify-center">
+        <p className="text-lg text-base-content/50">No slides available</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-56 sm:h-64 md:h-80 lg:h-96 2xl:h-screen/2 overflow-hidden rounded-lg shadow-xl border border-t-0 border-[var(--border-color)]">
+    <div className="w-full h-56 sm:h-64 md:h-80 lg:h-96 2xl:h-screen/2 overflow-hidden rounded-lg shadow-xl border border-t-0 border-[--border-color]">
       <ReactCarousel
         autoPlay={autoPlay}
         interval={interval}
@@ -74,24 +97,32 @@ export default function Carousel({
       >
         {slides.map((slide, index) => (
           <div
-            key={index}
+            key={slide._id}
             className="relative w-full h-56 sm:h-64 md:h-80 lg:h-96 2xl:h-screen/2"
           >
             <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
+              src={slide.image}
+              alt={slide.title}
+              width={100}
+              height={100}
               priority={index === 0}
               className="object-cover"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
             />
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
             {/* Legend */}
-            <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6">
-              <p className="text-gray-200 font-bold text-lg sm:text-xl md:text-2xl drop-shadow-lg">
-                {slide.legend}
-              </p>
+            <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 text-left">
+              {slide.title && (
+                <p className="text-gray-200 font-bold text-lg sm:text-xl md:text-2xl drop-shadow-lg">
+                  {slide.title}
+                </p>
+              )}
+              {slide.description && (
+                <p className="text-gray-300 text-sm sm:text-base mt-1 drop-shadow-md max-w-md">
+                  {slide.description}
+                </p>
+              )}
             </div>
           </div>
         ))}
