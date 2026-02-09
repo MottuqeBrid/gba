@@ -1,133 +1,109 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
 import Logo from "../Logo/Logo";
 import NavLink from "../NavLink/NavLink";
 import ThemeToggle from "../ThemeTogle/ThemeTogle";
+import {
+  FaHome,
+  FaCalendarAlt,
+  FaImages,
+  FaUsers,
+  FaInfoCircle,
+  FaUserShield,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
+
+const navItems = [
+  { href: "/", label: "Home", icon: <FaHome /> },
+  { href: "/events", label: "Events", icon: <FaCalendarAlt /> },
+  { href: "/gallery", label: "Gallery", icon: <FaImages /> },
+  { href: "/members", label: "Members", icon: <FaUsers /> },
+  { href: "/about", label: "About", icon: <FaInfoCircle /> },
+  // { href: "/admin", label: "Admin", icon: <FaUserShield /> },
+];
 
 export default function HomeNavbar() {
-  // Navlinks
-  const Navlinks = (
-    <>
-      <li>
-        <NavLink
-          href="/"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          Home
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          href="/events"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          Events
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          href="/gallery"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          Gallery
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          href="/members"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          Members
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          href="/about"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          About
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          href="/admin"
-          className="text-primary hover:text-primary-dark underline-offset-2 hover:underline"
-        >
-          Admin
-        </NavLink>
-      </li>
-      {/* <li>
-        <details>
-          <summary>Parent</summary>
-          <ul className="p-2 bg-base-100 w-40 z-1">
-            <li>
-              <NavLink href="/">Submenu 1</NavLink>
-            </li>
-          </ul>
-        </details>
-      </li> */}
-    </>
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-base-100/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-      <div className="navbar max-w-7xl mx-auto">
-        <div className="navbar-start">
-          <div className="dropdown">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-secondary btn-ghost lg:hidden"
+    <div className="bg-base-100/90 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-base-200">
+      <div className="navbar max-w-7xl mx-auto px-4 lg:px-6 h-20">
+        {/* Navbar Start: Mobile Menu + Branding */}
+        <div className="navbar-start gap-4">
+          <div
+            className={`dropdown lg:hidden ${isOpen ? "dropdown-open" : ""}`}
+          >
+            <button
+              className="btn btn-ghost btn-circle lg:hidden text-primary"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle Menu"
             >
-              {/* menu icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />{" "}
-              </svg>
-            </div>
+              {isOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
+            </button>
             <ul
-              tabIndex={-1}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              className={`menu menu-sm dropdown-content mt-3 z-50 p-4 shadow-2xl bg-base-100 rounded-2xl w-64 gap-2 border border-base-200 transition-all duration-300 ${
+                isOpen
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 -translate-y-4 pointer-events-none"
+              }`}
             >
-              {/* <li>
-                <NavLink href="/">Home</NavLink>
-              </li>
-              <li>
-                <NavLink href="/">Parent</NavLink>
-                <ul className="p-2">
-                  <li>
-                    <NavLink href="/">Submenu 1</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/">Submenu 2</NavLink>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <Link href="/">Item 3</Link>
-              </li> */}
-              {Navlinks}
+              <div className="mb-4 px-2"></div>
+              {navItems.map((item) => (
+                <li key={item.href} onClick={() => setIsOpen(false)}>
+                  <NavLink
+                    href={item.href}
+                    className="flex items-center gap-4 py-3 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-200 text-base font-medium"
+                    activeClassName="bg-primary text-primary-content font-bold shadow-lg shadow-primary/20"
+                  >
+                    <span className="text-xl">{item.icon}</span>
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
           </div>
-          <div className="navbar-center hidden lg:flex">
-            <ul className="menu menu-horizontal px-1">{Navlinks}</ul>
+
+          <div className="flex items-center gap-3 group">
+            <Logo
+              href="/"
+              size="md"
+              className="group-hover:rotate-12 transition-transform duration-500"
+            />
           </div>
         </div>
-        <div className="navbar-end">
-          {/* <ThemeToggle variant="dropdown" />
-          <ThemeToggle />
-          <ThemeToggle variant="button" size="lg" /> */}
-          <ThemeToggle variant="dropdown" showLabel />
-          <Logo href="/" size="md" />
+
+        {/* Navbar Center: Desktop Menu */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="flex items-center gap-2 bg-base-200/50 p-1.5 rounded-full border border-base-300">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <NavLink
+                  href={item.href}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-base-100 hover:text-primary hover:shadow-sm transition-all duration-300 active:scale-95"
+                  activeClassName="bg-primary text-primary-content shadow-lg shadow-primary/30 ring-2 ring-primary ring-offset-2 ring-offset-base-100"
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Navbar End: User Actions */}
+        <div className="navbar-end gap-2 sm:gap-4">
+          <ThemeToggle variant="button" size="md" />
+
+          <Link
+            href="/admin"
+            className="btn btn-primary btn-sm sm:btn-md rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:scale-105"
+          >
+            <span className="hidden sm:inline">Join Us</span>
+            <FaUsers className="sm:hidden" size={18} />
+          </Link>
         </div>
       </div>
     </div>
