@@ -13,8 +13,7 @@ export async function isAdmin() {
 
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    // User must be both 'admin' and 'verified' to access administrative functions
-    return payload.role === "admin" && payload.verified === true;
+    return payload.role === "admin";
   } catch (error) {
     return false;
   }

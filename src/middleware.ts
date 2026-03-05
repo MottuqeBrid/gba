@@ -6,16 +6,6 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "gba_secret_key_2026_unity_service",
 );
 
-// Define public routes that don't need any protection
-const publicRoutes = [
-  "/",
-  "/about",
-  "/events",
-  "/gallery",
-  "/members",
-  "/terms",
-  "/privacy",
-];
 const authRoutes = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
@@ -41,11 +31,11 @@ export async function middleware(request: NextRequest) {
 
     try {
       const { payload } = await jwtVerify(token, JWT_SECRET);
-      if (payload.role !== "admin" || payload.verified !== true) {
+      if (payload.role !== "admin") {
         return NextResponse.redirect(new URL("/", request.url));
       }
       return NextResponse.next();
-    } catch (error) {
+    } catch {
       const url = new URL("/login", request.url);
       url.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(url);
@@ -58,7 +48,7 @@ export async function middleware(request: NextRequest) {
       try {
         await jwtVerify(token, JWT_SECRET);
         return NextResponse.redirect(new URL("/", request.url));
-      } catch (error) {
+      } catch {
         // Token invalid, allow visiting auth pages
         return NextResponse.next();
       }
