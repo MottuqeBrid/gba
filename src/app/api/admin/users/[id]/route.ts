@@ -4,7 +4,7 @@ import { isAdmin } from "@/lib/isAdmin";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   if (!(await isAdmin())) {
     return new Response(
@@ -40,7 +40,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   if (!(await isAdmin())) {
     return new Response(
